@@ -1,7 +1,9 @@
+import com.sun.prism.shader.Solid_TextureYV12_Loader;
 import javafx.event.ActionEvent;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 public class MyGUI extends JFrame {
@@ -14,12 +16,14 @@ public class MyGUI extends JFrame {
 
     private JTextField jtfIP;
     private JTextField jtfport;
+    private JButton bAdd2;
 
 
 
 
     public MyGUI()
     {
+
 
         Container my_panel=getContentPane();
         setBounds(20,20,500,600);
@@ -40,21 +44,39 @@ public class MyGUI extends JFrame {
         jtfIP.setBounds(350,60,100,50);
         my_panel.add(jtfIP);
 
-        jtfport = new JTextField("port: ");
+        jtfport = new JTextField("");
         jtfport.setBounds(350,120,100,50);
         my_panel.add(jtfport);
 
-        bAdd=new JButton("Начать чат");
+        bAdd=new JButton("Ожидать");
         bAdd.setBounds(350,30,100,25);
         my_panel.add(bAdd);
         bAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
+                String  bufIP=jtfIP.getText();
+                int bufPort = Integer.parseInt(jtfport.getText());
+                Server serv=new Server(bufPort);
 
             }
-        });
 
+        });
+        bAdd2=new JButton("Добавить");
+        bAdd2.setBounds(350,280,100,25);
+        my_panel.add(bAdd2);
+        bAdd2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+
+                String  bufIP=jtfIP.getText();
+                int bufPort = Integer.parseInt(jtfport.getText());
+
+                SC sc=new SC(bufPort,bufIP);
+
+            }
+
+        });
 
 
     }

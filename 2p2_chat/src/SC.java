@@ -1,18 +1,29 @@
-import java.net.*;
+import javax.accessibility.AccessibleContext;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
+import java.net.InetAddress;
 
 public class SC {
-    public static void main(String[] ar)    {
-        int port = 6666; // случайный порт (может быть любое число от 1025 до 65535)
+
+    private int serverPort;
+    private String serverIP;
+
+    public SC(int serverPort, String serverIP) {
+        this.serverPort=serverPort; // здесь обязательно нужно указать порт к которому привязывается сервер.
+
+        this.serverIP=serverIP; // это IP-адрес компьютера, где исполняется наша серверная программа.
+        // Здесь указан адрес того самого компьютера где будет исполняться и клиент.
         try {
-            ServerSocket ss = new ServerSocket(port); // создаем сокет сервера и привязываем его к вышеуказанному порту
-            System.out.println("Waiting for a client...");
+            InetAddress ipAddress = InetAddress.getByName(serverIP); // создаем объект который отображает вышеописанный IP-адрес.
+            System.out.println("Any of you heard of a socket with IP address " + serverIP + " and port " + serverPort + "?");
+            Socket socket = new Socket(ipAddress, serverPort); // создаем сокет используя IP-адрес и порт сервера.
+            System.out.println("Yes! I just got hold of the program.");
 
-            Socket socket = ss.accept(); // заставляем сервер ждать подключений и выводим сообщение когда кто-то связался с сервером
-            System.out.println("Got a client :) ... Finally, someone saw me through all the cover!");
-            System.out.println();
-
-            // Берем входной и выходной потоки сокета, теперь можем получать и отсылать данные клиенту.
+            // Берем входной и выходной потоки сокета, теперь можем получать и отсылать данные клиентом.
             InputStream sin = socket.getInputStream();
             OutputStream sout = socket.getOutputStream();
 
@@ -20,16 +31,15 @@ public class SC {
             DataInputStream in = new DataInputStream(sin);
             DataOutputStream out = new DataOutputStream(sout);
 
+            // Создаем поток для чтения с клавиатуры.
+            BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
             String line = null;
-            while(true) {
-                line = in.readUTF(); // ожидаем пока клиент пришлет строку текста.
-                System.out.println("The dumb client just sent me this line : " + line);
-                System.out.println("I'm sending it back...");
-                out.writeUTF(line); // отсылаем клиенту обратно ту самую строку текста.
-                out.flush(); // заставляем поток закончить передачу данных.
-                System.out.println("Waiting for the next line...");
-                System.out.println();
-            }
-        } catch(Exception x) { x.printStackTrace(); }
+            System.out.println("Type in something and press enter. Will send it to the server and tell ya what it thinks.");
+            System.out.println();
+
+
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
     }
 }
