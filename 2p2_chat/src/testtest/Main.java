@@ -1,4 +1,6 @@
-import java.io.IOException;
+package testtest;
+
+import testtest.MyGUI;
 
 public class Main {
     public static void main(String[] args)

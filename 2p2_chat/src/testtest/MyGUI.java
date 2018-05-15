@@ -1,3 +1,5 @@
+package testtest;
+
 import com.sun.prism.shader.Solid_TextureYV12_Loader;
 import javafx.event.ActionEvent;
 
@@ -8,15 +10,15 @@ import javax.swing.*;
 
 public class MyGUI extends JFrame {
 
-    private JTextField jtfMessage;
-    private JTextField jtfName;
-    private JTextArea jtaTextAreaMessage;
-    private JButton bAdd;
-    private JFrame add_windows;
+    protected JTextField jtfMessage;
+    protected JTextField jtfName;
+    protected JTextArea jtaTextAreaMessage;
+    protected JButton bAdd;
+    protected JFrame add_windows;
 
-    private JTextField jtfIP;
-    private JTextField jtfport;
-    private JButton bAdd2;
+    protected JTextField jtfIP;
+    protected JTextField jtfport;
+    protected JButton bAdd2;
 
 
 
@@ -58,6 +60,8 @@ public class MyGUI extends JFrame {
                 String  bufIP=jtfIP.getText();
                 int bufPort = Integer.parseInt(jtfport.getText());
                 Server serv=new Server(bufPort);
+                serv.get();
+
 
             }
 
@@ -73,11 +77,25 @@ public class MyGUI extends JFrame {
                 int bufPort = Integer.parseInt(jtfport.getText());
 
                 SC sc=new SC(bufPort,bufIP);
+                sc.set_mes(jtfMessage.getText());
+                sc.send();
+
+
 
             }
 
         });
+        jtfMessage.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key=e.getKeyCode();
+                if(key==KeyEvent.VK_ENTER){
 
+
+
+                }
+            }
+        });
 
     }
 
