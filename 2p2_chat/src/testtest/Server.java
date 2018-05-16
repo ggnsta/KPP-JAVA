@@ -8,14 +8,22 @@ import java.util.ArrayList;
 import java.net.*;
 import java.io.*;
 
-public class Server {
+public class Server  {
 
     private int port;
     private DataInputStream in;
     private DataOutputStream out;
     private String message;
+    boolean check=false;
+    protected Socket socket;
 
-    public Server(int port) {
+
+    public void set_mes(String mes)
+    {
+        this.message=mes;
+    }
+
+    public void set(int port) {
         this.port = port; // случайный порт (может быть любое число от 1025 до 65535)
         try {
             ServerSocket ss = new ServerSocket(port); // создаем сокет сервера и привязываем его к вышеуказанному порту
@@ -27,8 +35,7 @@ public class Server {
             OutputStream sout = socket.getOutputStream();
              in = new DataInputStream(sin);
              out = new DataOutputStream(sout);
-
-
+             check=true;
 
         } catch (Exception x) {
             x.printStackTrace();
@@ -39,9 +46,23 @@ public class Server {
     {
         try {
         String line=in.readUTF();
-            System.out.println("The server was very polite. It sent me this : " + line);
+            System.out.println("Клиент : " + line);
         } catch (Exception x) {
             x.printStackTrace();
         }
     }
+    public void send(){
+        try {
+
+            System.out.println("Есть подключение.Шлю сообщения");
+            System.out.println();
+            out.writeUTF(this.message);
+            out.flush();
+
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+    }
+
 }
+

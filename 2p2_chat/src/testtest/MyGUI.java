@@ -19,12 +19,21 @@ public class MyGUI extends JFrame {
     protected JTextField jtfIP;
     protected JTextField jtfport;
     protected JButton bAdd2;
+    protected boolean check = false;
 
 
 
 
-    public MyGUI()
+    public MyGUI ()
     {
+
+
+        SC sc=new SC();
+        Server ttt=new Server();
+
+
+
+
 
 
         Container my_panel=getContentPane();
@@ -59,9 +68,9 @@ public class MyGUI extends JFrame {
 
                 String  bufIP=jtfIP.getText();
                 int bufPort = Integer.parseInt(jtfport.getText());
-                Server serv=new Server(bufPort);
-                serv.get();
-
+                ttt.set(4444);
+                check=true;
+                new Connect("waiting",ttt).start();
 
             }
 
@@ -75,13 +84,7 @@ public class MyGUI extends JFrame {
 
                 String  bufIP=jtfIP.getText();
                 int bufPort = Integer.parseInt(jtfport.getText());
-
-                SC sc=new SC(bufPort,bufIP);
-                sc.set_mes(jtfMessage.getText());
-                sc.send();
-
-
-
+                sc.connect(bufPort,bufIP);
             }
 
         });
@@ -90,13 +93,20 @@ public class MyGUI extends JFrame {
             public void keyPressed(KeyEvent e) {
                 int key=e.getKeyCode();
                 if(key==KeyEvent.VK_ENTER){
-
-
-
+                    if(check)
+                    {
+                        ttt.set_mes(jtfMessage.getText());
+                        ttt.send();
+                    }
+                    else {
+                        sc.set_mes(jtfMessage.getText());
+                        sc.send();
+                    }
                 }
             }
         });
 
     }
+
 
 }
