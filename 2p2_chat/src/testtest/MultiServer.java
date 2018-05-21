@@ -11,47 +11,21 @@ public class MultiServer implements Runnable {
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
     private MyGUI spasi;
-    private List<Worker> nikita = new ArrayList<Worker>();
+    private List<Worker> contacts = new ArrayList<Worker>();
     private String msg;
-    private int jj=0;
+    private int jj = 0;
     Socket socket;
-
-    public List<Worker> getNikita() {
-        return nikita;
-    }
-
-    public void setNikita(List<Worker> nikita) {
-        this.nikita = nikita;
-    }
-
-
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public MultiServer(int port, MyGUI spasi) {
-
-        this.serverPort = port;
-        this.spasi=spasi;
-    }
 
     @Override
     public void run() {
         openServerSocket();
 
         while (!isStopped()) {
-        if(jj==0)
-            {    Socket clientSocket = null;
+            Socket clientSocket = null;
             try {
 
-                clientSocket = this.serverSocket.accept();
+                clientSocket = this.serverSocket.accept(); // ждем клиента
                 System.out.println("Waiting.");
-
 
             } catch (IOException e) {
                 if (isStopped()) {
@@ -60,32 +34,27 @@ public class MultiServer implements Runnable {
                 }
                 throw new RuntimeException("Error accepting client connection", e);
             }
+            System.out.println("Как сервер.");
             Worker worker = new Worker(clientSocket, this.spasi);
-                System.out.println("раз.");
-
-            nikita.add(worker);
+            contacts.add(worker);
             worker.run();
-
         }
-        else
-        {
-            try {
-                System.out.println("типо клиент.");
-                this.socket = new Socket(spasi.jtfIP.getText(), 2222);
-                Worker worker = new Worker(socket, this.spasi);
-                nikita.add(worker);
-                System.out.println("два.");
-                worker.run();
-
-            } catch (Exception x) {
-                x.printStackTrace();
-                System.out.print("1");
-            }
-        }
-    }
         System.out.println("Server Stopped.");
     }
-//   new Thread(new Worker(clientSocket)).start());
+
+    public void runClient() {
+        try {
+            System.out.println("Как клиент.");
+            this.socket = new Socket(spasi.jtfIP.getText(), 2222); // конектимся к серверу
+            Worker worker = new Worker(socket, this.spasi);
+            contacts.add(worker);
+            worker.run();
+
+        } catch (Exception x) {
+            x.printStackTrace();
+        }
+
+    }
 
 
     private synchronized boolean isStopped() {
@@ -108,6 +77,29 @@ public class MultiServer implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException("Cannot open port " + this.serverPort, e);
         }
+    }
+
+    public List<Worker> getNikita() {
+        return contacts;
+    }
+
+    public void setNikita(List<Worker> contacts) {
+        this.contacts = contacts;
+    }
+
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public MultiServer(int port, MyGUI spasi) {
+
+        this.serverPort = port;
+        this.spasi = spasi;
     }
 
 }

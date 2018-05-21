@@ -20,7 +20,6 @@ public class MyGUI extends JFrame {
     protected JTextField jtfIP;
     protected JTextField jtfport;
     protected JButton bAdd2;
-    protected boolean check = false;
     protected JButton jb3;
 
     public JTextField getJtfMessage() {
@@ -67,11 +66,7 @@ public class MyGUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
-                String bufIP = jtfIP.getText();
-                int bufPort = Integer.parseInt(jtfport.getText());
-                ///   ttt.set(4444);
-                check = true;
-                ///   new Connect("waiting",ttt).start();
+               server.runClient();
 
             }
 
