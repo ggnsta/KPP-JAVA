@@ -27,9 +27,10 @@ public class MyGUI extends JFrame {
     public MyGUI ()
     {
 
-
+        MultiServer server = new MultiServer(4444);
+        new Thread(server).start();
         SC sc=new SC();
-        Server ttt=new Server();
+       // Server ttt=new Server();
 
 
 
@@ -68,9 +69,9 @@ public class MyGUI extends JFrame {
 
                 String  bufIP=jtfIP.getText();
                 int bufPort = Integer.parseInt(jtfport.getText());
-                ttt.set(4444);
+             ///   ttt.set(4444);
                 check=true;
-                new Connect("waiting",ttt).start();
+             ///   new Connect("waiting",ttt).start();
 
             }
 
@@ -95,8 +96,8 @@ public class MyGUI extends JFrame {
                 if(key==KeyEvent.VK_ENTER){
                     if(check)
                     {
-                        ttt.set_mes(jtfMessage.getText());
-                        ttt.send();
+                     //   ttt.set_mes(jtfMessage.getText());
+                       // ttt.send();
                     }
                     else {
                         sc.set_mes(jtfMessage.getText());
