@@ -13,7 +13,8 @@ public class MultiServer implements Runnable {
     private MyGUI spasi;
     private List<Worker> nikita = new ArrayList<Worker>();
     private String msg;
-
+    private int jj=0;
+    Socket socket;
 
     public List<Worker> getNikita() {
         return nikita;
@@ -42,8 +43,10 @@ public class MultiServer implements Runnable {
     @Override
     public void run() {
         openServerSocket();
+
         while (!isStopped()) {
-            Socket clientSocket = null;
+        if(jj==0)
+            {    Socket clientSocket = null;
             try {
 
                 clientSocket = this.serverSocket.accept();
@@ -57,16 +60,29 @@ public class MultiServer implements Runnable {
                 }
                 throw new RuntimeException("Error accepting client connection", e);
             }
-            Worker worker= new Worker(clientSocket,this.spasi);
-            nikita.add(worker);
-            //TODO:SET MESSAGE INTO WORKER
-            worker.setMessage(msg);
+            Worker worker = new Worker(clientSocket, this.spasi);
+                System.out.println("раз.");
 
+            nikita.add(worker);
             worker.run();
 
-
-
         }
+        else
+        {
+            try {
+                System.out.println("типо клиент.");
+                this.socket = new Socket(spasi.jtfIP.getText(), 2222);
+                Worker worker = new Worker(socket, this.spasi);
+                nikita.add(worker);
+                System.out.println("два.");
+                worker.run();
+
+            } catch (Exception x) {
+                x.printStackTrace();
+                System.out.print("1");
+            }
+        }
+    }
         System.out.println("Server Stopped.");
     }
 //   new Thread(new Worker(clientSocket)).start());

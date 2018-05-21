@@ -34,7 +34,7 @@ public class MyGUI extends JFrame {
 
         SC sc = new SC();
         // Server ttt=new Server();
-        System.out.println("davai.");
+
 
 
         Container my_panel = getContentPane();
