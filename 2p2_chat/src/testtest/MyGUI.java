@@ -13,7 +13,7 @@ public class MyGUI extends JFrame {
 
     protected JTextField jtfMessage;
     protected JTextField jtfName;
-    protected JTextArea jtaTextAreaMessage;
+    protected JTextArea jtaTextAreaMessage;// поле чата
     protected JButton bAdd;
     protected JFrame add_windows;
 
@@ -21,6 +21,7 @@ public class MyGUI extends JFrame {
     protected JTextField jtfport;
     protected JButton bAdd2;
     protected JButton jb3;
+    private JScrollPane chatScroll;
 
     public JTextField getJtfMessage() {
         return jtfMessage;
@@ -32,20 +33,17 @@ public class MyGUI extends JFrame {
         new Thread(server).start();
 
 
-
-
-
-
         Container my_panel = getContentPane();
         setBounds(20, 20, 500, 600);
         my_panel.setLayout(null);
 
         jtaTextAreaMessage = new JTextArea();
+        chatScroll = new JScrollPane(jtaTextAreaMessage);
         jtaTextAreaMessage.setEditable(false);
         jtaTextAreaMessage.setLineWrap(true);
-        JScrollPane jsp = new JScrollPane(jtaTextAreaMessage);
-        jtaTextAreaMessage.setBounds(20, 20, 250, 400);
-        my_panel.add(jtaTextAreaMessage);
+        jtaTextAreaMessage.setWrapStyleWord(true);
+        chatScroll.setBounds(20, 20, 250, 400);
+        my_panel.add(chatScroll);
 
         jtfMessage = new JTextField("Введите ваше сообщение: ");
         jtfMessage.setBounds(20, 420, 250, 50);
@@ -58,6 +56,8 @@ public class MyGUI extends JFrame {
         jtfport = new JTextField("");
         jtfport.setBounds(350, 120, 100, 50);
         my_panel.add(jtfport);
+
+
 
         bAdd = new JButton("Ожидать");
         bAdd.setBounds(350, 30, 100, 25);
@@ -78,12 +78,7 @@ public class MyGUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
-
-                List<Worker> nikita;
-                nikita=server.getNikita();
-                Worker a= nikita.get(0);
-                System.out.print(a.getName());
-                a.run();
+                server.runClient();
             }
 
         });
@@ -94,11 +89,12 @@ public class MyGUI extends JFrame {
                 if (key == KeyEvent.VK_ENTER) {
 
                     List<Worker> nikita;
-                    nikita=server.getNikita();
+                    nikita=server.getContacts();
                     Worker a= nikita.get(0);
                    // String str=a.getName();
                     //System.out.print(str);
                     a.send(jtfMessage.getText());
+                    jtfMessage.setText("");
 
                 }
             }

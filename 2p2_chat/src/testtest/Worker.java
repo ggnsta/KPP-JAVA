@@ -12,22 +12,12 @@ public class Worker extends Thread implements Runnable {
     protected Socket clientSocket = null;
     protected DataInputStream in;
     protected DataOutputStream out;
-    private String message=null;
-    MyGUI spasi;
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    protected MyGUI gui;
 
 
-
-    public Worker(Socket clientSocket, MyGUI spasi) {
+    public Worker(Socket clientSocket, MyGUI gui) {
         this.clientSocket = clientSocket;
-        this.spasi=spasi;
+        this.gui=gui;
 
     }
 
@@ -48,7 +38,7 @@ public class Worker extends Thread implements Runnable {
 
             while(true)
             {
-                this.get();
+                this.get();// собственно эти потоки создаются только для того, чтобы постоянно получать сообщения
 
             }
         } catch (IOException e) {
@@ -60,21 +50,21 @@ public class Worker extends Thread implements Runnable {
         System.out.println("проверочка");
 
         try {
-            String line=in.readUTF();
-            System.out.println("Клиент : " + line);
-            spasi.jtaTextAreaMessage.setText("abc");
+            String inMessage=in.readUTF();
+            System.out.println("Клиент : " + inMessage);
+            gui.jtaTextAreaMessage.append(inMessage+"\n");
         } catch (Exception x) {
             x.printStackTrace();
         }
     }
 
-    public void send(String messag){
+    public void send(String outMessage){
         try {
 
-            spasi.jtaTextAreaMessage.setText("abc");
-            System.out.println("send class worker");
 
-            out.writeUTF(messag);
+            gui.jtaTextAreaMessage.append(outMessage+"\n");
+            System.out.println("send class worker");
+            out.writeUTF(outMessage);
             out.flush();
 
 
@@ -83,9 +73,6 @@ public class Worker extends Thread implements Runnable {
         }
     }
 
-    public Worker meme()
-    {
-        return this;
-    }
+
 
 }
