@@ -11,25 +11,22 @@ import javax.swing.*;
 
 public class MyGUI extends JFrame {
 
-    protected JTextField jtfMessage;
+    protected JTextArea jtfMessage;
     protected JTextField jtfName;
     protected JTextArea jtaTextAreaMessage;// поле чата
     protected JButton bAdd;
-    protected JFrame add_windows;
-
     protected JTextField jtfIP;
     protected JTextField jtfport;
     protected JButton bAdd2;
     protected JButton jb3;
-    private JScrollPane chatScroll;
+    protected JScrollPane chatScroll;
+    protected JScrollPane messageScroll;
 
-    public JTextField getJtfMessage() {
-        return jtfMessage;
-    }
+
 
     public MyGUI() {
 
-        MultiServer server = new MultiServer(2222,this);
+        MultiServer server = new MultiServer(2222, this);
         new Thread(server).start();
 
 
@@ -45,9 +42,13 @@ public class MyGUI extends JFrame {
         chatScroll.setBounds(20, 20, 250, 400);
         my_panel.add(chatScroll);
 
-        jtfMessage = new JTextField("Введите ваше сообщение: ");
-        jtfMessage.setBounds(20, 420, 250, 50);
-        my_panel.add(jtfMessage);
+        jtfMessage = new JTextArea("Введите ваше сообщение: ");
+        messageScroll = new JScrollPane(jtfMessage);
+        jtfMessage.setEditable(true);
+        jtfMessage.setLineWrap(true);
+        jtfMessage.setWrapStyleWord(true);
+        messageScroll.setBounds(20, 420, 250, 50);
+        my_panel.add(messageScroll);
 
         jtfIP = new JTextField("IP: ");
         jtfIP.setBounds(350, 60, 100, 50);
@@ -58,14 +59,12 @@ public class MyGUI extends JFrame {
         my_panel.add(jtfport);
 
 
-
         bAdd = new JButton("Ожидать");
         bAdd.setBounds(350, 30, 100, 25);
         my_panel.add(bAdd);
         bAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-
 
 
             }
@@ -89,9 +88,9 @@ public class MyGUI extends JFrame {
                 if (key == KeyEvent.VK_ENTER) {
 
                     List<Worker> nikita;
-                    nikita=server.getContacts();
-                    Worker a= nikita.get(0);
-                   // String str=a.getName();
+                    nikita = server.getContacts();
+                    Worker a = nikita.get(0);
+                    // String str=a.getName();
                     //System.out.print(str);
                     a.send(jtfMessage.getText());
                     jtfMessage.setText("");
