@@ -31,8 +31,8 @@ public class MyGUI extends JFrame {
         MultiServer server = new MultiServer(2222,this);
         new Thread(server).start();
 
-        SC sc = new SC();
-        // Server ttt=new Server();
+
+
 
 
 
@@ -66,7 +66,7 @@ public class MyGUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
-               server.runClient();
+
 
             }
 
@@ -78,9 +78,12 @@ public class MyGUI extends JFrame {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
 
-                String bufIP = jtfIP.getText();
-                int bufPort = Integer.parseInt(jtfport.getText());
-                sc.connect(bufPort, bufIP);
+
+                List<Worker> nikita;
+                nikita=server.getNikita();
+                Worker a= nikita.get(0);
+                System.out.print(a.getName());
+                a.run();
             }
 
         });

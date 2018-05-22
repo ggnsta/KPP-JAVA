@@ -48,7 +48,6 @@ public class MultiServer implements Runnable {
             this.socket = new Socket(spasi.jtfIP.getText(), 2222); // конектимся к серверу
             Worker worker = new Worker(socket, this.spasi);
             contacts.add(worker);
-            worker.run();
 
         } catch (Exception x) {
             x.printStackTrace();
