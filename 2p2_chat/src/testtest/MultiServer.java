@@ -13,14 +13,15 @@ public class MultiServer implements Runnable {
     protected int serverPort = 9000;
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
-    private MyGUI gui;
+    protected MyGUI gui;
     private List<Worker> contacts = new ArrayList<Worker>();
     protected Socket socket;
+
+
 
     @Override
     public void run() {
         openServerSocket();
-
         while (!isStopped()) {
             Socket clientSocket = null;
             try {
@@ -75,9 +76,13 @@ public class MultiServer implements Runnable {
     }
 
     private void openServerSocket() {
+
+
         System.out.println("Opening server socket...");
+
         try {
             this.serverSocket = new ServerSocket(this.serverPort);
+
         }
         catch(ConnectException e) {
             Error error = new Error();
@@ -85,7 +90,7 @@ public class MultiServer implements Runnable {
         }
         catch (IOException e)// (включает в себя SocketTimeoutException )
         {
-          
+
             Error error = new Error();
             error.eOS2();
         }
@@ -107,6 +112,7 @@ public class MultiServer implements Runnable {
 
         this.serverPort = port;
         this.gui = gui;
+
     }
 
 }

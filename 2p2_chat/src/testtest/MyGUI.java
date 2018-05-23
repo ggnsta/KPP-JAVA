@@ -21,6 +21,7 @@ public class MyGUI extends JFrame {
     protected JButton jb3;
     protected JScrollPane chatScroll;
     protected JScrollPane messageScroll;
+    protected JLabel readyLabel;
 
 
 
@@ -58,6 +59,9 @@ public class MyGUI extends JFrame {
         jtfport.setBounds(350, 120, 100, 50);
         my_panel.add(jtfport);
 
+        readyLabel=new JLabel("");
+        readyLabel.setBounds(350,400,80,20);
+        my_panel.add(readyLabel);
 
         bAdd = new JButton("Ожидать");
         bAdd.setBounds(350, 30, 100, 25);
