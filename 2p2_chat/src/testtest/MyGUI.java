@@ -27,7 +27,7 @@ public class MyGUI extends JFrame {
 
     public MyGUI() {
 
-        MultiServer server = new MultiServer(2222, this);
+        MultiServer server = new MultiServer(49005, this);
         new Thread(server).start();
 
 
