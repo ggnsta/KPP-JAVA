@@ -93,9 +93,8 @@ public class MyGUI extends JFrame {
                     }
                     List<Worker> contacts = server.getContacts();
                     Worker worker = contacts.get(0);
-                    worker.sendFile(selectedFiles);
-
-                   jtfMessage.setText(selectedFiles.get(0));
+                    worker.transmitFile=true;
+                    model.setValue(0);
                  //  System.out.print(selectedFiles.size());
                 }
             }
