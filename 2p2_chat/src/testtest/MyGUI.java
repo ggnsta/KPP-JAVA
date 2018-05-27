@@ -13,7 +13,7 @@ import java.io.File;
 
 public class MyGUI extends JFrame {
 
-    //объекты gui'aн
+    //объекты gui'a
     protected JTextArea jtfMessage;
     protected JTextField jtfName;
     protected JTextArea jtaTextAreaMessage;// поле чата
@@ -25,6 +25,9 @@ public class MyGUI extends JFrame {
     protected JScrollPane messageScroll;
     protected JLabel readyLabel;
     protected JButton bAddFile;
+    protected JProgressBar transmitProgress;
+    protected BoundedRangeModel model=new DefaultBoundedRangeModel(0, 0, 0, 100);
+
 
     protected ArrayList<String> selectedFiles;// лист, в котором хранятся пути к файлам
 
@@ -39,6 +42,11 @@ public class MyGUI extends JFrame {
         setBounds(20, 20, 500, 600);
         my_panel.setLayout(null);
 
+
+        transmitProgress = new JProgressBar( model );
+        transmitProgress.setBounds( 350, 170, 100, 15 );
+        transmitProgress.setStringPainted( true );
+        my_panel.add(transmitProgress);
 
         jtaTextAreaMessage = new JTextArea();
         chatScroll = new JScrollPane(jtaTextAreaMessage);
@@ -85,9 +93,10 @@ public class MyGUI extends JFrame {
                     }
                     List<Worker> contacts = server.getContacts();
                     Worker worker = contacts.get(0);
+                    worker.sendFile(selectedFiles);
 
                    jtfMessage.setText(selectedFiles.get(0));
-                   System.out.print(selectedFiles.size());
+                 //  System.out.print(selectedFiles.size());
                 }
             }
 

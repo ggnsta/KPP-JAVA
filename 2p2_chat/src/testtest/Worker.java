@@ -1,5 +1,6 @@
 package testtest;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -7,6 +8,8 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Properties;
+import static java.lang.Math.toIntExact;
 
 public class Worker extends Thread implements Runnable {
 
@@ -46,8 +49,7 @@ public class Worker extends Thread implements Runnable {
 
         try {
             String inMessage = in.readUTF();
-            if (inMessage == "*$%%%NUMBER_OF_FILES%%%$*") {
-                System.out.print("file");
+            if (inMessage != "*$%%%NUMBER_OF_FILES%%%$*") {
                 getFile();
             } else {
                 System.out.println("Клиент : " + inMessage);
@@ -88,6 +90,7 @@ public class Worker extends Thread implements Runnable {
                 byte[] buffer = new byte[32 * 1024]; // размер буфера будет 32кб
                 int count;//количество прочитанных байтов
                 while ((count = fileIn.read(buffer)) != -1) {//read вернет -1, когда дойдет до конца файла
+                    gui.model.setValue(toIntExact(file.length())/(count*100));//отображаем прогресс передачи
                     out.write(buffer, 0, count);
                 }
 
@@ -103,14 +106,21 @@ public class Worker extends Thread implements Runnable {
         try {
             int filesCount = in.readInt();//получаем количество файлов
             gui.jtaTextAreaMessage.setText("#####Передается " + filesCount + " файлов#####\n");
+            Properties properties=System.getProperties();
+            String userHome= properties.getProperty("user.home");//получаем путь к домашенй папке пользователя
 
             for (int i = 0; i < filesCount; i++) {
                 long fileSize = in.readLong(); // получаем размер файла
-                String file = in.readUTF(); //прием имени файла
+                String fileName = in.readUTF(); //прием имени файла
                 byte[] buffer = new byte[32 * 1024];
-                FileOutputStream outFile = new FileOutputStream(file);
+
+
+                FileOutputStream outFile = new FileOutputStream(userHome+"\\downloads\\"+fileName);
                 int count, total = 0;
+
                 while ((count = in.read(buffer)) != -1) {
+
+                    gui.model.setValue(toIntExact(fileSize)/(total*100));//отображаем прогресс передачи
                     total += count;
                     outFile.write(buffer, 0, count);
 
@@ -118,6 +128,8 @@ public class Worker extends Thread implements Runnable {
                         break;
                     }
                 }
+
+                System.out.print(fileName+" передан");
                 outFile.flush();
                 outFile.close();
 
