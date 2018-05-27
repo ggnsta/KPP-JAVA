@@ -90,13 +90,15 @@ public class Worker extends Thread implements Runnable {
                 FileInputStream fileIn = new FileInputStream(file);
                 byte[] buffer = new byte[32 * 1024]; // размер буфера будет 32кб
 
+                //  while ((count = in.read(buffer, 0, Math.min(buffer.length, toIntExact(fileSize)-total))) != -1) {
+
                 int count;//количество прочитанных байтов (=размеры буфера)
                 while ((count = fileIn.read(buffer)) != -1) {//read вернет -1, когда дойдет до конца файла
 
                     int progress=(toIntExact(file.length())/count);//делим размре файла на размер буфера, получаем количество необходимых итераций(надо только для прогресс бара)
                     System.out.print(progress);
                     int currentProgress=0;
-                    gui.model.setValue(100*currentProgress/progress);//отображаем прогресс передачи
+                    gui.model.setValue(100*(currentProgress++)/progress);//отображаем прогресс передачи
                     out.write(buffer);
                 }
 
@@ -126,7 +128,7 @@ public class Worker extends Thread implements Runnable {
                 FileOutputStream outFile = new FileOutputStream(userHome+"\\downloads\\"+fileName);
                 int count, total = 0;
 
-                while ((count = in.read(buffer)) != -1) {
+                while ((count = in.read(buffer, 0, Math.min(buffer.length, toIntExact(fileSize)-total))) != -1) {
 
                     gui.model.setValue(100*total/toIntExact(fileSize));//отображаем прогресс передачи
                     total += count;
