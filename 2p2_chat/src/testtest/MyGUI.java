@@ -6,15 +6,17 @@ import javafx.event.ActionEvent;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
+import java.io.File;
 
 public class MyGUI extends JFrame {
 
+    //объекты gui'aн
     protected JTextArea jtfMessage;
     protected JTextField jtfName;
     protected JTextArea jtaTextAreaMessage;// поле чата
-    protected JButton bAdd;
     protected JTextField jtfIP;
     protected JTextField jtfport;
     protected JButton bAdd2;
@@ -22,7 +24,9 @@ public class MyGUI extends JFrame {
     protected JScrollPane chatScroll;
     protected JScrollPane messageScroll;
     protected JLabel readyLabel;
+    protected JButton bAddFile;
 
+    protected ArrayList<String> selectFiles;
 
 
     public MyGUI() {
@@ -34,6 +38,7 @@ public class MyGUI extends JFrame {
         Container my_panel = getContentPane();
         setBounds(20, 20, 500, 600);
         my_panel.setLayout(null);
+
 
         jtaTextAreaMessage = new JTextArea();
         chatScroll = new JScrollPane(jtaTextAreaMessage);
@@ -59,22 +64,33 @@ public class MyGUI extends JFrame {
         jtfport.setBounds(350, 120, 100, 50);
         my_panel.add(jtfport);
 
-        readyLabel=new JLabel("");
-        readyLabel.setBounds(350,400,80,20);
+        readyLabel = new JLabel("");
+        readyLabel.setBounds(350, 400, 80, 20);
         my_panel.add(readyLabel);
 
-        bAdd = new JButton("Ожидать");
-        bAdd.setBounds(350, 30, 100, 25);
-        my_panel.add(bAdd);
-        bAdd.addActionListener(new ActionListener() {
+        bAddFile = new JButton("файл");
+        bAddFile.setBounds(350, 30, 100, 25);
+        my_panel.add(bAddFile);
+        bAddFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-
-
+                JFileChooser chooser = new JFileChooser();
+                chooser.setMultiSelectionEnabled(true);
+                selectFiles = new ArrayList<String>();
+                int returnVal = chooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION){
+                    File[] file = chooser.getSelectedFiles();
+                    for (File directory : file){// получаем все вложенные объекты в каталоге
+                        selectFiles.add(directory+"");
+                    }
+                    List<Worker> contacts = server.getContacts();
+                    Worker worker = contacts.get(0);
+                    worker.sendFile(selectFiles);
+                }
             }
 
         });
-        bAdd2 = new JButton("Добавить");
+        bAdd2 = new JButton("Добавить ");
         bAdd2.setBounds(350, 280, 100, 25);
         my_panel.add(bAdd2);
         bAdd2.addActionListener(new ActionListener() {
@@ -91,9 +107,8 @@ public class MyGUI extends JFrame {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_ENTER) {
 
-                    List<Worker> nikita;
-                    nikita = server.getContacts();
-                    Worker a = nikita.get(0);
+                    List<Worker> contacts = server.getContacts();
+                    Worker a = contacts.get(0);
                     // String str=a.getName();
                     //System.out.print(str);
                     a.send(jtfMessage.getText());
@@ -102,9 +117,7 @@ public class MyGUI extends JFrame {
                 }
             }
         });
-        jb3 = new JButton("Ожидать");
-        jb3.setBounds(350, 930, 100, 25);
-        my_panel.add(jb3);
+
 
     }
 
