@@ -16,7 +16,6 @@ public class Worker extends Thread implements Runnable {
     protected MyGUI gui;
 
 
-
     public Worker(Socket clientSocket, MyGUI gui) {
         this.clientSocket = clientSocket;
         this.gui = gui;
@@ -34,7 +33,7 @@ public class Worker extends Thread implements Runnable {
             System.out.println("Есть контакт : " + str);
             while (true) {
                 this.get();// собственно эти потоки создаются только для того, чтобы постоянно получать сообщения
-                this.getFile();
+
             }
 
         } catch (IOException e) {
@@ -47,8 +46,13 @@ public class Worker extends Thread implements Runnable {
 
         try {
             String inMessage = in.readUTF();
-            System.out.println("Клиент : " + inMessage);
-            gui.jtaTextAreaMessage.append(inMessage + "\n");
+            if (inMessage == "*$%%%NUMBER_OF_FILES%%%$*") {
+                System.out.print("file");
+                getFile();
+            } else {
+                System.out.println("Клиент : " + inMessage);
+                gui.jtaTextAreaMessage.append(inMessage + "\n");
+            }
         } catch (Exception x) {
             x.printStackTrace();
         }
@@ -71,7 +75,10 @@ public class Worker extends Thread implements Runnable {
 
     public void sendFile(ArrayList<String> list) {
         int countFiles = list.size();
+        String indeficator = "*$%%%NUMBER_OF_FILES%%%$*"; // эта строка отсылается первой, выглядит так, чтобы клиент мог отличить просто сообщение от передачи файлов.
         try {
+            out.writeUTF(indeficator);// даём понять клиенту, что дальше будет передача файлов
+            out.writeInt(countFiles);//отсылаем количество файлов
             for (int i = 0; i < countFiles; i++) {
                 File file = new File(list.get(i));
                 out.writeLong(file.length());//отсылаем размер файла
@@ -85,7 +92,7 @@ public class Worker extends Thread implements Runnable {
                 }
 
                 out.flush();
-                 fileIn.close();
+                fileIn.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,24 +104,25 @@ public class Worker extends Thread implements Runnable {
             int filesCount = in.readInt();//получаем количество файлов
             gui.jtaTextAreaMessage.setText("#####Передается " + filesCount + " файлов#####\n");
 
-            for(int i = 0; i<filesCount; i++) {
+            for (int i = 0; i < filesCount; i++) {
                 long fileSize = in.readLong(); // получаем размер файла
                 String file = in.readUTF(); //прием имени файла
-                byte[] buffer = new byte[32*1024];
+                byte[] buffer = new byte[32 * 1024];
                 FileOutputStream outFile = new FileOutputStream(file);
                 int count, total = 0;
-                while ((count = in.read(buffer)) != -1){
+                while ((count = in.read(buffer)) != -1) {
                     total += count;
                     outFile.write(buffer, 0, count);
 
-                    if(total == fileSize){
+                    if (total == fileSize) {
                         break;
                     }
                 }
                 outFile.flush();
                 outFile.close();
 
-            }} catch (IOException e) {
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

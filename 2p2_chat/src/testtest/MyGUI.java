@@ -26,7 +26,7 @@ public class MyGUI extends JFrame {
     protected JLabel readyLabel;
     protected JButton bAddFile;
 
-    protected ArrayList<String> selectFiles;
+    protected ArrayList<String> selectedFiles;// лист, в котором хранятся пути к файлам
 
 
     public MyGUI() {
@@ -76,16 +76,18 @@ public class MyGUI extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setMultiSelectionEnabled(true);
-                selectFiles = new ArrayList<String>();
+                selectedFiles = new ArrayList<String>();
                 int returnVal = chooser.showOpenDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION){
                     File[] file = chooser.getSelectedFiles();
                     for (File directory : file){// получаем все вложенные объекты в каталоге
-                        selectFiles.add(directory+"");
+                        selectedFiles.add(directory+"");
                     }
                     List<Worker> contacts = server.getContacts();
                     Worker worker = contacts.get(0);
-                    worker.sendFile(selectFiles);
+
+                   jtfMessage.setText(selectedFiles.get(0));
+                   System.out.print(selectedFiles.size());
                 }
             }
 
