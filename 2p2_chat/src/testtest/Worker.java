@@ -81,6 +81,7 @@ public class Worker extends Thread implements Runnable {
         try {
             out.writeUTF(indeficator);// даём понять клиенту, что дальше будет передача файлов
             out.writeInt(countFiles);//отсылаем количество файлов
+
             for (int i = 0; i < countFiles; i++) {
                 File file = new File(list.get(i));
                 out.writeLong(file.length());//отсылаем размер файла
@@ -88,14 +89,21 @@ public class Worker extends Thread implements Runnable {
 
                 FileInputStream fileIn = new FileInputStream(file);
                 byte[] buffer = new byte[32 * 1024]; // размер буфера будет 32кб
-                int count;//количество прочитанных байтов
+
+                int count;//количество прочитанных байтов (=размеры буфера)
                 while ((count = fileIn.read(buffer)) != -1) {//read вернет -1, когда дойдет до конца файла
-                    gui.model.setValue(toIntExact(file.length())/(count*100));//отображаем прогресс передачи
-                    out.write(buffer, 0, count);
+
+                    int progress=(toIntExact(file.length())/count);//делим размре файла на размер буфера, получаем количество необходимых итераций(надо только для прогресс бара)
+                    System.out.print(progress);
+                    int currentProgress=0;
+                    gui.model.setValue(100*currentProgress/progress);//отображаем прогресс передачи
+                    out.write(buffer);
                 }
 
+                gui.jtaTextAreaMessage.append(file.getName()+" передан");
                 out.flush();
                 fileIn.close();
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -120,7 +128,7 @@ public class Worker extends Thread implements Runnable {
 
                 while ((count = in.read(buffer)) != -1) {
 
-                    gui.model.setValue(toIntExact(fileSize)/(total*100));//отображаем прогресс передачи
+                    gui.model.setValue(100*total/toIntExact(fileSize));//отображаем прогресс передачи
                     total += count;
                     outFile.write(buffer, 0, count);
 
@@ -128,8 +136,8 @@ public class Worker extends Thread implements Runnable {
                         break;
                     }
                 }
+                gui.jtaTextAreaMessage.append(fileName+" принят");
 
-                System.out.print(fileName+" передан");
                 outFile.flush();
                 outFile.close();
 
