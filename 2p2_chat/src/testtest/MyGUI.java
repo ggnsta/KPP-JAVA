@@ -26,10 +26,10 @@ public class MyGUI extends JFrame {
     protected JLabel readyLabel;
     protected JButton bAddFile;
     protected JProgressBar transmitProgress;
-    protected BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 100);
+    protected BoundedRangeModel model=new DefaultBoundedRangeModel(0, 0, 0, 100);
 
 
-
+    protected ArrayList<String> selectedFiles;// лист, в котором хранятся пути к файлам
 
 
     public MyGUI() {
@@ -43,9 +43,9 @@ public class MyGUI extends JFrame {
         my_panel.setLayout(null);
 
 
-        transmitProgress = new JProgressBar(model);
-        transmitProgress.setBounds(350, 170, 100, 15);
-        transmitProgress.setStringPainted(true);
+        transmitProgress = new JProgressBar( model );
+        transmitProgress.setBounds( 350, 170, 100, 15 );
+        transmitProgress.setStringPainted( true );
         my_panel.add(transmitProgress);
 
         jtaTextAreaMessage = new JTextArea();
@@ -84,19 +84,17 @@ public class MyGUI extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setMultiSelectionEnabled(true);
-
-                List<Worker> contacts = server.getContacts();//получаем список подключений
-                Worker worker = contacts.get(0);//получаем i-ое подключение
-
+                selectedFiles = new ArrayList<String>();
                 int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                if (returnVal == JFileChooser.APPROVE_OPTION){
                     File[] file = chooser.getSelectedFiles();
-                    for (File directory : file) {// получаем все вложенные объекты в каталоге
-                        worker.selectedFiles.add(directory + "");// добавляем пути к файлам
+                    for (File directory : file){// получаем все вложенные объекты в каталоге
+                        selectedFiles.add(directory+"");
                     }
-
-
-                    //  System.out.print(selectedFiles.size());
+                    List<Worker> contacts = server.getContacts();
+                    Worker worker = contacts.get(0);
+                    model.setValue(0);
+                 //  System.out.print(selectedFiles.size());
                 }
             }
 
@@ -122,7 +120,7 @@ public class MyGUI extends JFrame {
                     Worker a = contacts.get(0);
                     // String str=a.getName();
                     //System.out.print(str);
-                    a.send(jtfMessage.getText());
+                    a.send();
                     jtfMessage.setText("");
 
                 }
