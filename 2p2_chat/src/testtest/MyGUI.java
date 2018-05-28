@@ -26,10 +26,10 @@ public class MyGUI extends JFrame {
     protected JLabel readyLabel;
     protected JButton bAddFile;
     protected JProgressBar transmitProgress;
-    protected BoundedRangeModel model=new DefaultBoundedRangeModel(0, 0, 0, 100);
+    protected BoundedRangeModel model = new DefaultBoundedRangeModel(0, 0, 0, 100);
 
 
-    protected ArrayList<String> selectedFiles;// лист, в котором хранятся пути к файлам
+
 
 
     public MyGUI() {
@@ -43,9 +43,9 @@ public class MyGUI extends JFrame {
         my_panel.setLayout(null);
 
 
-        transmitProgress = new JProgressBar( model );
-        transmitProgress.setBounds( 350, 170, 100, 15 );
-        transmitProgress.setStringPainted( true );
+        transmitProgress = new JProgressBar(model);
+        transmitProgress.setBounds(350, 170, 100, 15);
+        transmitProgress.setStringPainted(true);
         my_panel.add(transmitProgress);
 
         jtaTextAreaMessage = new JTextArea();
@@ -84,18 +84,19 @@ public class MyGUI extends JFrame {
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setMultiSelectionEnabled(true);
-                selectedFiles = new ArrayList<String>();
+
+                List<Worker> contacts = server.getContacts();//получаем список подключений
+                Worker worker = contacts.get(0);//получаем i-ое подключение
+
                 int returnVal = chooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION){
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File[] file = chooser.getSelectedFiles();
-                    for (File directory : file){// получаем все вложенные объекты в каталоге
-                        selectedFiles.add(directory+"");
+                    for (File directory : file) {// получаем все вложенные объекты в каталоге
+                        worker.selectedFiles.add(directory + "");// добавляем пути к файлам
                     }
-                    List<Worker> contacts = server.getContacts();
-                    Worker worker = contacts.get(0);
-                    worker.transmitFile=true;
-                    model.setValue(0);
-                 //  System.out.print(selectedFiles.size());
+
+
+                    //  System.out.print(selectedFiles.size());
                 }
             }
 

@@ -14,15 +14,16 @@ public class MultiServer implements Runnable {
     protected ServerSocket serverSocket = null;
     protected boolean isStopped = false;
     protected MyGUI gui;
-    private List<Worker> contacts = new ArrayList<Worker>();
+    protected List<Worker> contacts = new ArrayList<Worker>();
     protected Socket socket;
 
 
 
     @Override
     public void run() {
-        openServerSocket();
+        int numOfInConect=0; // количество подключения, для которых данный экземпляр является сервером
         while (!isStopped()) {
+            openServerSocket(numOfInConect);
             Socket clientSocket = null;
             try {
 
@@ -40,14 +41,17 @@ public class MultiServer implements Runnable {
             Worker worker = new Worker(clientSocket, this.gui);
             contacts.add(worker);
             worker.run();
+            numOfInConect++;
         }
         System.out.println("Server Stopped.");
     }
 
     public void runClient() {
+        int i=0;
         try {
             System.out.println("Как клиент.");
-            this.socket = new Socket(gui.jtfIP.getText(), 49005); // конектимся к серверу
+            this.socket = new Socket(gui.jtfIP.getText(), 49005+(i++)); // конектимся к серверу
+            System.out.print("port:"+49005+i);
             Worker worker = new Worker(socket, this.gui);
             contacts.add(worker);
             worker.start();
@@ -75,13 +79,13 @@ public class MultiServer implements Runnable {
         }
     }
 
-    private void openServerSocket() {
+    private void openServerSocket(int numOfInConnect) {
 
 
         System.out.println("Opening server socket...");
 
         try {
-            this.serverSocket = new ServerSocket(this.serverPort);
+            this.serverSocket = new ServerSocket(this.serverPort+numOfInConnect);// каждое новое входящее подключение будет идти через 49005+numOfInConnect порт
 
         }
         catch(ConnectException e) {
