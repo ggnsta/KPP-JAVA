@@ -10,10 +10,11 @@ import static java.lang.Math.toIntExact;
 public class Worker extends Thread implements Runnable {
 
     protected Socket clientSocket = null;
-  //  protected DataInputStream in;
-   // protected DataOutputStream out;
+    //  protected DataInputStream in;
+    // protected DataOutputStream out;
     protected ObjectOutputStream oos;
     protected ObjectInputStream oin;
+    protected ArrayList<String> fileList = new ArrayList<String>();
 
     protected MyGUI gui;
 
@@ -31,8 +32,8 @@ public class Worker extends Thread implements Runnable {
             OutputStream output = clientSocket.getOutputStream();
             oin = new ObjectInputStream(input);
             oos = new ObjectOutputStream(output);
-          //  in = new DataInputStream(input);
-           // out = new DataOutputStream(output);
+            //  in = new DataInputStream(input);
+            // out = new DataOutputStream(output);
             String str = this.getName();
             System.out.println("Есть контакт : " + str);
             while (true) {
@@ -52,8 +53,8 @@ public class Worker extends Thread implements Runnable {
         try {
             MessageObject buf= (MessageObject) oin.readObject();
 
-                System.out.println(buf.senderName+":"+buf.message);
-                gui.jtaTextAreaMessage.append(buf.message + "\n");
+            System.out.println(buf.senderName+":"+buf.message);
+            gui.jtaTextAreaMessage.append(buf.message + "\n");
 
         } catch (Exception x) {
             x.printStackTrace();
@@ -152,5 +153,8 @@ public class Worker extends Thread implements Runnable {
 
     }
 */
+public Worker()
+{
 
+}
 }
